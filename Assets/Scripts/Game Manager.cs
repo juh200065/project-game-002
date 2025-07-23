@@ -83,12 +83,6 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    int GetHighScore()
-    {
-        return PlayerPrefs.HasKey("highScore0") ? PlayerPrefs.GetInt("highScore0") : 0;
-    }
-
-
     public float CalculateGameSpeed()
     {
         if (State != GameState.Playing)
@@ -127,11 +121,21 @@ public class GameManager : MonoBehaviour
         PlayStartTime = Time.time;
     }
 
+    
+
         
 
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("スコアリセット");
+        }
+
         if (State == GameState.Playing)
         {
             scoreText.text = "Score: " + (Mathf.FloorToInt(CalculateScore()) + FoodScore);
@@ -142,7 +146,7 @@ public class GameManager : MonoBehaviour
         }
         else if (State == GameState.Dead)
         {
-            scoreText.text = "Score:" + finalScore;
+            scoreText.text = "Score: " + finalScore;
             topScoresText.text = GetTopScoresText();
         }
         
@@ -167,6 +171,7 @@ public class GameManager : MonoBehaviour
             //DeadUI.SetActive(true);
             //PlayButtonUI.SetActive(true);
             SaveHighScore();
+            finalScore = Mathf.FloorToInt(CalculateScore()) + FoodScore;
             State = GameState.Dead;
             
         }
